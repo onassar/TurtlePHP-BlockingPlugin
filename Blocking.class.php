@@ -12,7 +12,7 @@
     }
 
     /**
-     * Database
+     * Blocking
      * 
      * @author   Oliver Nassar <onassar@gmail.com>
      * @abstract
