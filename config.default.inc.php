@@ -14,6 +14,8 @@
         'ip' => array(
             'addresses' => array(
             )
+        ),
+        'userAgents' => array(
         )
     );
 

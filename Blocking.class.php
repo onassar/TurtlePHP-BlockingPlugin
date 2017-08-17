@@ -55,6 +55,25 @@
         }
 
         /**
+         * _blockUserAgents
+         * 
+         * @access protected
+         * @static
+         * @param  array $userAgents
+         * @return void
+         */
+        protected static function _blockUserAgents(array $userAgents)
+        {
+            if (isset($_SERVER['HTTP_USER_AGENT']) === true) {
+                foreach ($userAgents as $userAgent) {
+                    if (strstr($_SERVER['HTTP_USER_AGENT'], $userAgent) !== false) {
+                        exit(0);
+                    }
+                }
+            }
+        }
+
+        /**
          * init
          * 
          * @access public
@@ -68,6 +87,7 @@
                 require_once self::$_configPath;
                 $config = \Plugin\Config::retrieve('TurtlePHP-BlockingPlugin');
                 self::_blockIpAddresses($config['ip']['addresses']);
+                self::_blockUserAgents($config['userAgents']);
             }
         }
 
