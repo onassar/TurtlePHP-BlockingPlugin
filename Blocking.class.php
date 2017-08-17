@@ -47,7 +47,7 @@
          */
         protected static function _blockIpAddresses(array $iPAddresses)
         {
-el(IP),
+el(IP);
 el(pr($iPAddresses, true));
             if (in_array(IP, $iPAddresses) === true) {
                 exit(0);
