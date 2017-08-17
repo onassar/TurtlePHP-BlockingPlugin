@@ -48,7 +48,7 @@
         protected static function _blockIpAddresses(array $iPAddresses)
         {
             foreach ($iPAddresses as $iPAddress) {
-                if (in_array($iPAddress, IP) === true) {
+                if (strstr(IP, $iPAddress) !== false) {
                     exit(0);
                 }
             }
