@@ -22,8 +22,8 @@
         /**
          * _configPath
          *
-         * @var    string
-         * @access protected
+         * @var     string
+         * @access  protected
          * @static
          */
         protected static $_configPath = 'config.default.inc.php';
@@ -31,8 +31,8 @@
         /**
          * _initiated
          *
-         * @var    boolean
-         * @access protected
+         * @var     boolean
+         * @access  protected
          * @static
          */
         protected static $_initiated = false;
@@ -40,10 +40,10 @@
         /**
          * _blockIpAddresses
          * 
-         * @access protected
+         * @access  protected
          * @static
-         * @param  array $iPAddresses
-         * @return void
+         * @param   array $iPAddresses
+         * @return  void
          */
         protected static function _blockIpAddresses(array $iPAddresses)
         {
@@ -57,10 +57,10 @@
         /**
          * _blockUserAgents
          * 
-         * @access protected
+         * @access  protected
          * @static
-         * @param  array $userAgents
-         * @return void
+         * @param   array $userAgents
+         * @return  void
          */
         protected static function _blockUserAgents(array $userAgents)
         {
@@ -76,9 +76,9 @@
         /**
          * init
          * 
-         * @access public
+         * @access  public
          * @static
-         * @return void
+         * @return  void
          */
         public static function init()
         {
@@ -94,9 +94,9 @@
         /**
          * setConfigPath
          * 
-         * @access public
-         * @param  string $path
-         * @return void
+         * @access  public
+         * @param   string $path
+         * @return  void
          */
         public static function setConfigPath($path)
         {
@@ -108,6 +108,6 @@
     $info = pathinfo(__DIR__);
     $parent = ($info['dirname']) . '/' . ($info['basename']);
     $configPath = ($parent) . '/config.inc.php';
-    if (is_file($configPath)) {
+    if (is_file($configPath) === true) {
         Blocking::setConfigPath($configPath);
     }
