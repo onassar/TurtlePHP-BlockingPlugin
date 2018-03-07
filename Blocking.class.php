@@ -55,6 +55,25 @@
         }
 
         /**
+         * _blockReferers
+         * 
+         * @access  protected
+         * @static
+         * @param   array $referers
+         * @return  void
+         */
+        protected static function _blockReferers(array $referers)
+        {
+            if (isset($_SERVER['HTTP_REFERER']) === true) {
+                foreach ($referers as $referer) {
+                    if (strstr($_SERVER['HTTP_REFERER'], $referer) !== false) {
+                        exit(0);
+                    }
+                }
+            }
+        }
+
+        /**
          * _blockUserAgents
          * 
          * @access  protected
@@ -87,6 +106,7 @@
                 require_once self::$_configPath;
                 $config = \Plugin\Config::retrieve('TurtlePHP-BlockingPlugin');
                 self::_blockIpAddresses($config['ip']['addresses']);
+                self::_blockReferers($config['referers']);
                 self::_blockUserAgents($config['userAgents']);
             }
         }
