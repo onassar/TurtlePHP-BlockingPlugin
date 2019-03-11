@@ -38,17 +38,17 @@
         protected static $_initiated = false;
 
         /**
-         * _blockIpAddresses
+         * _blockIPAddresses
          * 
          * @access  protected
          * @static
-         * @param   array $iPAddresses
+         * @param   array $addresses
          * @return  void
          */
-        protected static function _blockIpAddresses(array $iPAddresses)
+        protected static function _blockIPAddresses(array $addresses)
         {
-            foreach ($iPAddresses as $iPAddress) {
-                if (strstr(IP, $iPAddress) !== false) {
+            foreach ($addresses as $address) {
+                if (strstr(IP, $address) !== false) {
                     exit(0);
                 }
             }
@@ -105,7 +105,7 @@
                 self::$_initiated = true;
                 require_once self::$_configPath;
                 $config = \Plugin\Config::retrieve('TurtlePHP-BlockingPlugin');
-                self::_blockIpAddresses($config['ip']['addresses']);
+                self::_blockIPAddresses($config['ip']['addresses']);
                 self::_blockReferers($config['referers']);
                 self::_blockUserAgents($config['userAgents']);
             }
