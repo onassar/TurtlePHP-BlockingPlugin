@@ -12,13 +12,10 @@
      */
     $config = array(
         'ip' => array(
-            'addresses' => array(
-            )
+            'addresses' => array()
         ),
-        'referers' => array(
-        ),
-        'userAgents' => array(
-        )
+        'referers' => array(),
+        'userAgents' => array()
     );
 
     /**
