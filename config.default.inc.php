@@ -14,7 +14,7 @@
         'ip' => array(
             'addresses' => array()
         ),
-        'referers' => array(),
+        'referrers' => array(),
         'userAgents' => array()
     );
 
