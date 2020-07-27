@@ -7,7 +7,7 @@
     namespace Plugin\Blocking;
 
     /**
-     * Config settings
+     * Plugin Config Data
      * 
      */
     $config = array(
@@ -19,12 +19,8 @@
     );
 
     /**
-     * Config storage
+     * Storage
      * 
      */
-
-    // Store
-    \Plugin\Config::add(
-        'TurtlePHP-BlockingPlugin',
-        $config
-    );
+    $key = 'TurtlePHP-BlockingPlugin';
+    \Plugin\Config::add($key, $pluginConfigData);
