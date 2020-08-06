@@ -3,27 +3,22 @@
     // namespace
     namespace Plugin;
 
-    // dependency check
-    if (class_exists('\\Plugin\\Config') === false) {
-        throw new \Exception(
-            '*Config* class required. Please see ' .
-            'https://github.com/onassar/TurtlePHP-ConfigPlugin'
-        );
-    }
-
     /**
      * Blocking
      * 
+     * Blocking plugin for TurtlePHP.
+     * 
      * @author  Oliver Nassar <onassar@gmail.com>
      * @abstract
+     * @extends Base
      */
-    abstract class Blocking
+    abstract class Blocking extends Base
     {
         /**
          * _configPath
          *
          * @access  protected
-         * @var     string
+         * @var     string (default: 'config.default.inc.php')
          * @static
          */
         protected static $_configPath = 'config.default.inc.php';
@@ -32,7 +27,7 @@
          * _initiated
          *
          * @access  protected
-         * @var     bool
+         * @var     bool (default: false)
          * @static
          */
         protected static $_initiated = false;
@@ -42,16 +37,22 @@
          * 
          * @access  protected
          * @static
-         * @param   array $addresses
-         * @return  void
+         * @return  bool
          */
-        protected static function _blockIPAddresses(array $addresses)
+        protected static function _blockIPAddresses(): bool
         {
+            $ip = IP ?? false;
+            if ($ip === false) {
+                return false;
+            }
+            $configData = static::_getConfigData();
+            $addresses = $configData['ipData']['addresses'];
             foreach ($addresses as $address) {
-                if (strstr(IP, $address) !== false) {
+                if (strstr($ip, $address) !== false) {
                     exit(0);
                 }
             }
+            return false;
         }
 
         /**
@@ -59,18 +60,22 @@
          * 
          * @access  protected
          * @static
-         * @param   array $referrers
-         * @return  void
+         * @return  bool
          */
-        protected static function _blockReferrers(array $referrers)
+        protected static function _blockReferrers(): bool
         {
-            if (isset($_SERVER['HTTP_REFERER']) === true) {
-                foreach ($referrers as $referrer) {
-                    if (strstr($_SERVER['HTTP_REFERER'], $referrer) !== false) {
-                        exit(0);
-                    }
+            $httpReferrer = $_SERVER['HTTP_REFERER'] ?? null;
+            if ($httpReferrer === null) {
+                return false;
+            }
+            $configData = static::_getConfigData();
+            $referrers = $configData['referrers'];
+            foreach ($referrers as $referrer) {
+                if (strstr($httpReferrer, $referrer) !== false) {
+                    exit(0);
                 }
             }
+            return false;
         }
 
         /**
@@ -78,18 +83,34 @@
          * 
          * @access  protected
          * @static
-         * @param   array $userAgents
-         * @return  void
+         * @return  bool
          */
-        protected static function _blockUserAgents(array $userAgents)
+        protected static function _blockUserAgents(): bool
         {
-            if (isset($_SERVER['HTTP_USER_AGENT']) === true) {
-                foreach ($userAgents as $userAgent) {
-                    if (strstr($_SERVER['HTTP_USER_AGENT'], $userAgent) !== false) {
-                        exit(0);
-                    }
+            $httpUserAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+            if ($httpUserAgent === null) {
+                return false;
+            }
+            $configData = static::_getConfigData();
+            $userAgents = $configData['userAgents'];
+            foreach ($userAgents as $userAgent) {
+                if (strstr($httpUserAgent, $userAgent) !== false) {
+                    exit(0);
                 }
             }
+            return false;
+        }
+
+        /**
+         * _checkDependencies
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _checkDependencies(): void
+        {
+            static::_checkConfigPluginDependency();
         }
 
         /**
@@ -97,37 +118,23 @@
          * 
          * @access  public
          * @static
-         * @return  void
+         * @return  bool
          */
-        public static function init()
+        public static function init(): bool
         {
-            if (self::$_initiated === false) {
-                self::$_initiated = true;
-                require_once self::$_configPath;
-                $config = \Plugin\Config::retrieve('TurtlePHP-BlockingPlugin');
-                self::_blockIPAddresses($config['ip']['addresses']);
-                self::_blockReferrers($config['referrers']);
-                self::_blockUserAgents($config['userAgents']);
+            if (static::$_initiated === true) {
+                return false;
             }
-        }
-
-        /**
-         * setConfigPath
-         * 
-         * @access  public
-         * @param   string $path
-         * @return  void
-         */
-        public static function setConfigPath($path)
-        {
-            self::$_configPath = $path;
+            parent::init();
+            static::_blockIPAddresses();
+            static::_blockReferrers();
+            static::_blockUserAgents();
+            return true;
         }
     }
 
-    // Config
+    // Config path loading
     $info = pathinfo(__DIR__);
     $parent = ($info['dirname']) . '/' . ($info['basename']);
     $configPath = ($parent) . '/config.inc.php';
-    if (is_file($configPath) === true) {
-        Blocking::setConfigPath($configPath);
-    }
+    \Plugin\Blocking::setConfigPath($configPath);
