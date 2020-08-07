@@ -46,7 +46,7 @@
                 return false;
             }
             $configData = static::_getConfigData();
-            $addresses = $configData['ipData']['addresses'];
+            $addresses = $configData['ip']['addresses'];
             foreach ($addresses as $address) {
                 if (strstr($ip, $address) !== false) {
                     exit(0);
