@@ -1,12 +1,6 @@
 <?php
 
     /**
-     * Namespace
-     * 
-     */
-    namespace Plugin\Blocking;
-
-    /**
      * Plugin Config Data
      * 
      */
@@ -23,4 +17,4 @@
      * 
      */
     $key = 'TurtlePHP-BlockingPlugin';
-    \Plugin\Config::add($key, $pluginConfigData);
+    TurtlePHP\Plugin\Config::set($key, $pluginConfigData);

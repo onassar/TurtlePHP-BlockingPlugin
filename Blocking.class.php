@@ -1,7 +1,7 @@
 <?php
 
     // namespace
-    namespace Plugin;
+    namespace TurtlePHP\Plugin;
 
     /**
      * Blocking
@@ -137,4 +137,4 @@
     $info = pathinfo(__DIR__);
     $parent = ($info['dirname']) . '/' . ($info['basename']);
     $configPath = ($parent) . '/config.inc.php';
-    \Plugin\Blocking::setConfigPath($configPath);
+    \TurtlePHP\Plugin\Blocking::setConfigPath($configPath);
