@@ -4,10 +4,14 @@
      * Plugin Config Data
      * 
      */
-    $config = array(
+    $pluginConfigData = array(
+        'callback' => function(string $method, string $value, string $match): bool {
+            exit(0);
+        },
         'ip' => array(
             'addresses' => array()
         ),
+        'pathPatterns' => array(),
         'referrers' => array(),
         'userAgents' => array()
     );

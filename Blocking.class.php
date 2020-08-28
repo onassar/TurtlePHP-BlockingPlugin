@@ -49,7 +49,33 @@
             $addresses = $configData['ip']['addresses'];
             foreach ($addresses as $address) {
                 if (strstr($ip, $address) !== false) {
-                    exit(0);
+                    $method = 'ipAddresses';
+                    static::_handleBlock($method, $ip, $address);
+                }
+            }
+            return false;
+        }
+
+        /**
+         * _blockPaths
+         * 
+         * @access  protected
+         * @static
+         * @return  bool
+         */
+        protected static function _blockPaths(): bool
+        {
+            $requestURI = static::_getRequestURI() ?? null;
+            if ($requestURI === null) {
+                return false;
+            }
+            $configData = static::_getConfigData();
+            $patterns = $configData['pathPatterns'];
+            foreach ($patterns as $pattern) {
+                $pattern = static::_getBlockingPathPattern($pattern);
+                if (preg_match($pattern, $requestURI) === 1) {
+                    $method = 'paths';
+                    static::_handleBlock($method, $requestURI, $pattern);
                 }
             }
             return false;
@@ -72,7 +98,8 @@
             $referrers = $configData['referrers'];
             foreach ($referrers as $referrer) {
                 if (strstr($httpReferrer, $referrer) !== false) {
-                    exit(0);
+                    $method = 'referrers';
+                    static::_handleBlock($method, $httpReferrer, $referrer);
                 }
             }
             return false;
@@ -95,7 +122,8 @@
             $userAgents = $configData['userAgents'];
             foreach ($userAgents as $userAgent) {
                 if (strstr($httpUserAgent, $userAgent) !== false) {
-                    exit(0);
+                    $method = 'userAgents';
+                    static::_handleBlock($method, $httpUserAgent, $userAgent);
                 }
             }
             return false;
@@ -114,6 +142,53 @@
         }
 
         /**
+         * _getBlockingPathPattern
+         * 
+         * @access  protected
+         * @static
+         * @param   string $pathPattern
+         * @return  string
+         */
+        protected static function _getBlockingPathPattern(string $pathPattern): string
+        {
+            $pathPattern = str_replace('/', '\/', $pathPattern);
+            $pattern = '/' . ($pathPattern) . '/';
+            $pattern .= 'i';
+            return $pattern;
+        }
+
+        /**
+         * _getRequestURI
+         * 
+         * @access  protected
+         * @static
+         * @return  null|string
+         */
+        protected static function _getRequestURI(): ?string
+        {
+            $path = $_SERVER['REQUEST_URI'] ?? null;
+            return $path;
+        }
+
+        /**
+         * _handleBlock
+         * 
+         * @access  protected
+         * @static
+         * @param   string $method
+         * @param   string $value
+         * @param   string $match
+         * @return  void
+         */
+        protected static function _handleBlock(string $method, string $value, string $match): void
+        {
+            $configData = static::_getConfigData();
+            $callback = $configData['callback'];
+            $args = array($method, $value, $match);
+            call_user_func_array($callback, $args);
+        }
+
+        /**
          * init
          * 
          * @access  public
@@ -127,6 +202,7 @@
             }
             parent::init();
             static::_blockIPAddresses();
+            static::_blockPaths();
             static::_blockReferrers();
             static::_blockUserAgents();
             return true;
